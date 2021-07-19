@@ -65,77 +65,73 @@ void _print(T t, V... v)
 
 //----------------------------------------------------------------------------------------------
 
-vector<int> adj[100];
-bool visited[100];
-vector<int> intime(100,0);
-vector<int> outtime(100,0);
-int timer = 0;
-/*
-    timer is golbal here because we want it to be updated each second and want it to be available globally
+vector<vector<int>> adj;
+vector<bool> visited;
+bool is_cycle_present = false;
 
-    if we would have passed it to function then stack would have saved the state and would have given the
-    same time when we would have returned and asked for the departure time.
-
-    we don't want the saved state of time for each funtion to be used, we want the updated one.
-
-    in a crux you are telling each node to take it's time and update it for the next node to use it and
-    further update it. (beacuse the upcoming node will definitely have much more time than this node)
-
-    we can do it for undirected graph also but it doesnot makes sense to do it for undirected because we want 
-    a particular path to be followed by dfs and doesn't want it to return different values everytime by 
-    following a different path everytime.
-*/
 
 void precomputation()
 {
     //no precomputation
 }
 
-void makeadj(int m, int n){
+void bfs(int node, int parent){
+
+	queue<pair<int,int>> q;
+	q.push({node,parent});
+	visited[node] = true;
+
+	while(!q.empty()){
+
+		int curr = q.front().first;
+        int parent = q.front().second;
+		q.pop();
+
+		for(auto child: adj[curr]){
+			if(visited[child] == false){
+
+				q.push({child,curr});
+				visited[child] = true;
+			}
+            else if(child != parent){
+
+                is_cycle_present = true;
+            }
+
+            // same logic as that of dfs with only one difference 
+            // in dfs cycle is formed by back edge, however here it is formed by cross edge.
+
+            // bfs doesn't have a back edge, just imagine how bfs works, that edge would have been a 
+            // tree edge if it would have been there in the past. why would have bfs left it there for a back edge
+            // bfs would have pushed it in the queue there itself and made it a tree edge.
+		}
+
+	}
+}
+
+void makeadj(int m){
 
     while(m--){
         int a,b;
         cin >> a >> b;
         adj[a].push_back(b);
+        adj[b].push_back(a);
     }
-}
-  
-void dfs(int node){
-
-    visited[node] = 1;
-
-    // this is the time when a node is first arrived.
-    intime[node] = timer++;     // take your time and increment for next node.
-    cout << node << "-->";
-
-    for(auto child: adj[node]){
-        if(visited[child] == 0){
-            dfs(child);
-            
-            // don't write departure time here, the current node is still not processed here
-            // it will be processed when we are out of the for loop.
-        }
-    }
-
-    // this is the time when the node is beign departured
-    outtime[node] = timer++;
 }
 
 void solve()
 {
     int n, m;
     cin >> n >> m;
-    makeadj(m,n);
 
-    for(int i=1 ; i<=n ; i++)
-        if(visited[i] == 0)
-            dfs(i);
+    adj.resize(n+1);
+    visited.resize(n+1);
 
-    cout << endl;
+    makeadj(m);
 
-    for(int i=1 ; i<=n ; i++){
-        cout << intime[i] << " " << outtime[i] << endl;
-    }
+    bfs(1, -1);
+    cout << (is_cycle_present? "yes present" : "not present") << endl;
+
 }
 
 //------------------------------------------------------------------------------------------------

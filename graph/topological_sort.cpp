@@ -70,6 +70,9 @@ bool visited[100];
 vector<int> intime(100,0);
 vector<int> outtime(100,0);
 int timer = 0;
+vector<pair<int,int>> topo;
+
+
 /*
     timer is golbal here because we want it to be updated each second and want it to be available globally
 
@@ -106,7 +109,6 @@ void dfs(int node){
 
     // this is the time when a node is first arrived.
     intime[node] = timer++;     // take your time and increment for next node.
-    cout << node << "-->";
 
     for(auto child: adj[node]){
         if(visited[child] == 0){
@@ -119,6 +121,9 @@ void dfs(int node){
 
     // this is the time when the node is beign departured
     outtime[node] = timer++;
+
+    topo.push_back({outtime[node], node});  // just push the outtime with the node as pair
+
 }
 
 void solve()
@@ -131,10 +136,12 @@ void solve()
         if(visited[i] == 0)
             dfs(i);
 
-    cout << endl;
+    sort(topo.rbegin(), topo.rend());  // sort topo on the basis of outtime in the dec order.
 
-    for(int i=1 ; i<=n ; i++){
-        cout << intime[i] << " " << outtime[i] << endl;
+    for(auto x:topo){
+        // print the node number
+        
+        cout << x.second << " " ;
     }
 }
 

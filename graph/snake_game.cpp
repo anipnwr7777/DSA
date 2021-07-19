@@ -65,77 +65,103 @@ void _print(T t, V... v)
 
 //----------------------------------------------------------------------------------------------
 
-vector<int> adj[100];
-bool visited[100];
-vector<int> intime(100,0);
-vector<int> outtime(100,0);
-int timer = 0;
-/*
-    timer is golbal here because we want it to be updated each second and want it to be available globally
+vector<vector<int>> adj;
+vector<bool> visited;
+vector<int> level;
 
-    if we would have passed it to function then stack would have saved the state and would have given the
-    same time when we would have returned and asked for the departure time.
-
-    we don't want the saved state of time for each funtion to be used, we want the updated one.
-
-    in a crux you are telling each node to take it's time and update it for the next node to use it and
-    further update it. (beacuse the upcoming node will definitely have much more time than this node)
-
-    we can do it for undirected graph also but it doesnot makes sense to do it for undirected because we want 
-    a particular path to be followed by dfs and doesn't want it to return different values everytime by 
-    following a different path everytime.
-*/
 
 void precomputation()
 {
     //no precomputation
 }
 
-void makeadj(int m, int n){
+void bfs(int node){
+
+	queue<int> q;
+	q.push(node);
+	visited[node] = true;
+	level[node] = 0;
+
+	// use level as it was used in bipartite graph.
+
+	while(!q.empty()){
+
+		int curr = q.front();
+		q.pop();
+
+		for(auto child: adj[curr]){
+			if(visited[child] == false){
+
+				q.push(child);
+				visited[child] = true;
+				level[child] = level[curr] + 1;
+			}
+		}
+
+	}
+}
+
+void makeadj(int m){
+
+	map<int,int> snakes_ladders;
+
+
+	// map the values of ladders and snakes u --> v.
 
     while(m--){
+
         int a,b;
         cin >> a >> b;
-        adj[a].push_back(b);
-    }
-}
-  
-void dfs(int node){
-
-    visited[node] = 1;
-
-    // this is the time when a node is first arrived.
-    intime[node] = timer++;     // take your time and increment for next node.
-    cout << node << "-->";
-
-    for(auto child: adj[node]){
-        if(visited[child] == 0){
-            dfs(child);
-            
-            // don't write departure time here, the current node is still not processed here
-            // it will be processed when we are out of the for loop.
-        }
+        snakes_ladders[a] = b;
     }
 
-    // this is the time when the node is beign departured
-    outtime[node] = timer++;
+    for(int i=1 ; i<=100 ; i++){
+
+    	for(int j=1 ; j<=6 ; j++){
+
+    		// for all the values add u --> v for current vlaue + 6, because dice has 6 values.
+    		
+    		int u=i , v=i+j;
+
+    		// if we end at a value and have a snake or ladder there, then update the final value
+    		// after going through the snake or the ladder.
+
+    		if(snakes_ladders.count(v) == 1){
+
+    			v = snakes_ladders[v];
+    		}
+
+    		// now the final vlaue after throwing the die or anything shouldn't be outside 100
+    		// i.e. you can't do a (99+6) to reach 105.
+    		// only make an edge when value is less than equal to 100.
+
+    		if(v<=100){
+    			adj[u].push_back(v);
+    		}
+    	}
+    }
 }
 
 void solve()
 {
     int n, m;
     cin >> n >> m;
-    makeadj(m,n);
 
-    for(int i=1 ; i<=n ; i++)
-        if(visited[i] == 0)
-            dfs(i);
+    // n = 100
 
-    cout << endl;
+    // m --> no of snakes or ladders.
 
-    for(int i=1 ; i<=n ; i++){
-        cout << intime[i] << " " << outtime[i] << endl;
-    }
+    adj.resize(n+1);
+    visited.resize(n+1);
+    level.resize(n+1);   // level is used to store the answer as the smallest distance to reach any node.
+
+    makeadj(m);
+
+    bfs(1);
+
+    cout << level[100] << endl;
+
+
 }
 
 //------------------------------------------------------------------------------------------------

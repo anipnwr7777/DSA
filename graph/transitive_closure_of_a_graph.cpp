@@ -65,33 +65,18 @@ void _print(T t, V... v)
 
 //----------------------------------------------------------------------------------------------
 
-vector<int> adj[100];
-bool visited[100];
-vector<int> intime(100,0);
-vector<int> outtime(100,0);
-int timer = 0;
-/*
-    timer is golbal here because we want it to be updated each second and want it to be available globally
-
-    if we would have passed it to function then stack would have saved the state and would have given the
-    same time when we would have returned and asked for the departure time.
-
-    we don't want the saved state of time for each funtion to be used, we want the updated one.
-
-    in a crux you are telling each node to take it's time and update it for the next node to use it and
-    further update it. (beacuse the upcoming node will definitely have much more time than this node)
-
-    we can do it for undirected graph also but it doesnot makes sense to do it for undirected because we want 
-    a particular path to be followed by dfs and doesn't want it to return different values everytime by 
-    following a different path everytime.
-*/
+vector<vector<int>> adj;
+vector<bool> visited;
+vector<vector<bool>> is_connected;  // connectivity matrix.
 
 void precomputation()
 {
     //no precomputation
 }
 
-void makeadj(int m, int n){
+void makeadj(int m){
+
+    // this is for directed graph.
 
     while(m--){
         int a,b;
@@ -99,42 +84,53 @@ void makeadj(int m, int n){
         adj[a].push_back(b);
     }
 }
-  
-void dfs(int node){
+
+void dfs(int node, int root_node){
 
     visited[node] = 1;
 
-    // this is the time when a node is first arrived.
-    intime[node] = timer++;     // take your time and increment for next node.
-    cout << node << "-->";
-
     for(auto child: adj[node]){
         if(visited[child] == 0){
-            dfs(child);
-            
-            // don't write departure time here, the current node is still not processed here
-            // it will be processed when we are out of the for loop.
+
+            is_connected[root_node][child] = true; // mark it as reachable.
+            dfs(child, root_node);
         }
     }
-
-    // this is the time when the node is beign departured
-    outtime[node] = timer++;
 }
 
 void solve()
 {
     int n, m;
     cin >> n >> m;
-    makeadj(m,n);
 
-    for(int i=1 ; i<=n ; i++)
-        if(visited[i] == 0)
-            dfs(i);
+    adj.resize(n+1);
+    visited.resize(n+1);
+    is_connected.resize(n+1);
 
-    cout << endl;
+    for(int i=0 ; i<=n ; i++){
+
+        // make it a matrix by resizing
+        is_connected[i].resize(n+1);
+
+    }
+
+    makeadj(m);
 
     for(int i=1 ; i<=n ; i++){
-        cout << intime[i] << " " << outtime[i] << endl;
+
+        // cleat the visited vector for each time and then resize and reinitialize it.
+        visited.clear();
+        visited.resize(n+1, false);
+
+        dfs(i, i);
+        is_connected[i][i] = true;
+    }
+
+    for(int i=1; i<=n ; i++){
+        for(int j=1 ; j<=n ; j++){
+            cout << is_connected[i][j] << " ";
+        }
+        cout << endl;
     }
 }
 
