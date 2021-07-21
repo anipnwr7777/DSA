@@ -65,9 +65,9 @@ void _print(T t, V... v)
 
 //----------------------------------------------------------------------------------------------
 
-vector<int> adj[100];
-bool visited[100];
-vector<int> intime(100, 0);
+vector<vector<int>> adj;
+vector<bool> visited;
+vector<int> intime;
 int timer = 0;
 /*
     timer is golbal here because we want it to be updated each second and want it to be available globally
@@ -118,7 +118,7 @@ int dfs(int node, int parent) {
         if (visited[child] == 0) {
             tm = min(tm, dfs(child, node));
         }
-        else if(child != parent){
+        else if (child != parent) {
             tm = min(tm, intime[child]);
         }
     }
@@ -126,7 +126,7 @@ int dfs(int node, int parent) {
     if ((tm == intime[node]) && (parent != -1)) {
         /*
             u --> v, this is being considered.
-            dfs(v): dfs is on v for an edge u-->v, and if v doesnot satisy the property of 
+            dfs(v): dfs is on v for an edge u-->v, and if v doesnot satisy the property of
             bridge edge, then u-->v is a bridge edge.
         */
         cout << parent << "-->" << node << endl;
@@ -138,6 +138,9 @@ void solve()
 {
     int n, m;
     cin >> n >> m;
+    adj.resize(n + 1);
+    visited.resize(n + 1);
+    intime.resize(n + 1);
     makeadj(m, n);
 
     for (int i = 1 ; i <= n ; i++) {
