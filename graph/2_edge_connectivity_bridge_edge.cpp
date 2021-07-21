@@ -124,6 +124,11 @@ int dfs(int node, int parent) {
     }
     // instead of printing the edges some names may occour twice in that case you can just use a map or set to remove redundancy
     if ((tm == intime[node]) && (parent != -1)) {
+        /*
+            u --> v, this is being considered.
+            dfs(v): dfs is on v for an edge u-->v, and if v doesnot satisy the property of 
+            bridge edge, then u-->v is a bridge edge.
+        */
         cout << parent << "-->" << node << endl;
     }
     return tm;

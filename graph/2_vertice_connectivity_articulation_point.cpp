@@ -68,77 +68,70 @@ void _print(T t, V... v)
 vector<vector<int>> adj;
 vector<bool> visited;
 vector<int> intime;
-vector<int> outtime;
 int timer = 0;
-/*
-    timer is golbal here because we want it to be updated each second and want it to be available globally
-
-    if we would have passed it to function then stack would have saved the state and would have given the
-    same time when we would have returned and asked for the departure time.
-
-    we don't want the saved state of time for each funtion to be used, we want the updated one.
-
-    in a crux you are telling each node to take it's time and update it for the next node to use it and
-    further update it. (beacuse the upcoming node will definitely have much more time than this node)
-
-    we can do it for undirected graph also but it doesnot makes sense to do it for undirected because we want 
-    a particular path to be followed by dfs and doesn't want it to return different values everytime by 
-    following a different path everytime.
-*/
 
 void precomputation()
 {
     //no precomputation
 }
 
-void makeadj(int m, int n){
-    while(m--){
-        int a,b;
+void makeadj(int m) {
+    while (m--) {
+        int a, b;
         cin >> a >> b;
         adj[a].push_back(b);
+        adj[b].push_back(a);
     }
 }
-  
-void dfs(int node){
+
+int dfs(int node, int parent) {
 
     visited[node] = 1;
+    intime[node] = timer++;
+    int tm = intime[node];
 
-    // this is the time when a node is first arrived.
-    intime[node] = timer++;     // take your time and increment for next node.
-    cout << node << "-->";
-
-    for(auto child: adj[node]){
-        if(visited[child] == 0){
-            dfs(child);
-            
-            // don't write departure time here, the current node is still not processed here
-            // it will be processed when we are out of the for loop.
+    for (auto child : adj[node]) {
+        // if child is not visited then do something
+        if (visited[child] == 0) { 
+            tm = min(tm, dfs(child, node));
+        }
+        // else if the child is visited and is not the parent of node then do something
+        else if (child != parent) {
+            tm = min(tm, intime[child]);
         }
     }
+    if (tm >= intime[parent] && parent != 1) {
+        /*
+            u --> v, this is being considered.
+            dfs(v): dfs is on v, if v doesnot satisy the property of articulation point then, u is an articulation point.
 
-    // this is the time when the node is beign departured
-    outtime[node] = timer++;
+            we ignore 1-->x, where x is a random child of 1, because root node holds certain special property and has to be 
+            evaluated separately. that is why we ignore any u-->v, where v says that u is an articulation point (u being 1).
+
+            everything else is same as bridge edge, just the condition differs.
+            concept used is also same i.e. arrival and departure time of a vertex in a graph.
+        */
+        cout << parent << endl;
+    }
+    return tm;
 }
 
 void solve()
 {
     int n, m;
     cin >> n >> m;
+    adj.resize(n + 1);
+    visited.resize(n + 1, 0);
+    intime.resize(n + 1);
+    makeadj(m);
 
-    adj.resize(n+1);
-    visited.resize(n+1);
-    intime.resize(n+1);
-    outtime.resize(n+1);
-    makeadj(m,n);
-
-    for(int i=1 ; i<=n ; i++)
-        if(visited[i] == 0)
-            dfs(i);
-
-    cout << endl;
-    for(int i=1 ; i<=n ; i++){
-        cout << intime[i] << " " << outtime[i] << endl;
+    // if outdegree of 1 is more than 1, then 1 is an articulation point.
+    if (adj[1].size() > 1) {
+        cout << 1 << endl;
     }
+    for (int i = 1 ; i <= n ; i++)
+        if (visited[i] == 0)
+            dfs(i, -1);
 }
 
 //------------------------------------------------------------------------------------------------
@@ -148,8 +141,6 @@ signed main()
     ios::sync_with_stdio(0);
     cin.tie(0);
     precomputation();
-
     solve();
-
     return 0;
 }
