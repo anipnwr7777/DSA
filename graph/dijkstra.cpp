@@ -16,7 +16,7 @@ void dijkstra(int nodes) {
     while (n--) {
         int mn = largest, curr;
         for (int i = 1 ; i <= nodes ; i++) {
-            if (dist[i] > mn && visited[i] == 0) {
+            if (dist[i] < mn && visited[i] == 0) {
                 mn = dist[i];
                 curr = i;
             }
@@ -48,17 +48,13 @@ void solve() {
         int a, b, wt;
         cin >> a >> b >> wt;
         adj[a][b] = wt;
-        adj[b][a] = wt;
     }
 
     dijkstra(nodes);
-
 }
 
 signed main() {
     ios::sync_with_stdio(0); cin.tie(0);
-    int t; cin >> t;
-    while (t--)
-        solve();
+    solve();
     return 0;
 }
