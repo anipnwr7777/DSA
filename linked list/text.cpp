@@ -1,41 +1,26 @@
 #include<bits/stdc++.h>
 using namespace std;
+const int n = 1;
+const int m = 4;
 
-struct Node{
-	int Data;
-	Node *Next;
-};
-
-Node* newnode(int data){
-	Node *node = (Node*)malloc(sizeof(Node));
-	node->Data = data;
-	node->Next = NULL;
-	return node;
-}
-
-Node* construct_list(vector<int> list){
-	int n = list.size();
-	Node *head = NULL, *node= NULL;
-	head = newnode(list[0]);
-	node =  head;
-	for(int i=1 ; i<n ; i++){
-		node->Next = newnode(list[i]);
-		node = node->Next;
+void cal_sum(int arr[n][m]) {
+	for (int i = 0 ; i < n ; i++) {
+		for (int j = 0 ; j < m ; j++) {
+			arr[i][j] = i + 3;
+		}
 	}
-	return head;
-}
-
-void printlist(Node *head){
-	while(head != NULL){
-		cout << head->Data << " ";
-		head = head->Next;
+	for (int i = 0 ; i < n ; i++) {
+		for (int j = 0 ; j < m ; j++) {
+			cout << arr[i][j] << " ";
+		}
+		cout << endl;
 	}
-	cout << endl;
 }
 
-int main(){
-	vector<int> list = {1,2,3,4,5};
-	Node *head = construct_list(list);
-	printlist(head);
-    return 0;
+int main() {
+	int arr[1][4] = {{1, 2, 3, 4}};
+	cal_sum(arr);
+
+	
+	return 0;
 }
