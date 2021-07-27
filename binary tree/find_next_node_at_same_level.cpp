@@ -1,5 +1,6 @@
 #include<bits/stdc++.h>
 using namespace std;
+int final_level = -1, flag = 0;
 
 struct Node{
 	int key;
@@ -10,13 +11,19 @@ struct Node{
 	}
 };
 
-int height(Node *root){
+void preorder(Node *root, int node, int level){
 	if(root == nullptr)
-		return 0;
-	int lefth = height(root->left);
-	int righth = height(root->right);
+		return;
 
-	return max(lefth , righth) + 1;
+	if(level == final_level && flag == 0){
+		cout << root->key << endl;
+		flag = 1;
+	}
+	if(root->key == node){
+		final_level = level;
+	}
+	preorder(root->left, node, level + 1);
+	preorder(root->right, node, level + 1);
 }
 
 int main(){
@@ -27,10 +34,6 @@ int main(){
 			  4   5
 			 / \ / \
 			7  8 10 11   
-			    \
-			     12
-			      \
-			      20
 	*/
 
 	Node *root = new Node(3);
@@ -40,9 +43,9 @@ int main(){
 	root->left->right = new Node(8);
 	root->right->left = new Node(10);
 	root->right->right = new Node(11);
-	root->left->right->right = new Node(12);
-	root->left->right->right->right = new Node(20);
+	int node;
+	cin >> node;
+	preorder(root, node, 0);
 
-	cout << "height of the tree is " << height(root) << endl;
     return 0;
 }

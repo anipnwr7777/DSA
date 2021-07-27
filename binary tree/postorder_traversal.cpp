@@ -10,13 +10,13 @@ struct Node{
 	}
 };
 
-int height(Node *root){
+void postorder(Node *root){
 	if(root == nullptr)
-		return 0;
-	int lefth = height(root->left);
-	int righth = height(root->right);
+		return;
 
-	return max(lefth , righth) + 1;
+	postorder(root->left);
+	postorder(root->right);
+	cout << root->key << " ";
 }
 
 int main(){
@@ -27,10 +27,6 @@ int main(){
 			  4   5
 			 / \ / \
 			7  8 10 11   
-			    \
-			     12
-			      \
-			      20
 	*/
 
 	Node *root = new Node(3);
@@ -40,9 +36,7 @@ int main(){
 	root->left->right = new Node(8);
 	root->right->left = new Node(10);
 	root->right->right = new Node(11);
-	root->left->right->right = new Node(12);
-	root->left->right->right->right = new Node(20);
+	postorder(root);
 
-	cout << "height of the tree is " << height(root) << endl;
     return 0;
 }

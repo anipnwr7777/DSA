@@ -10,13 +10,19 @@ struct Node{
 	}
 };
 
-int height(Node *root){
+void left_view(Node *root, int *maxlevel, int level){
+	// level is the level of the current node (local to the function call)
+	// maxlevel is the max level printed till now, it has to be reflected back and is not local
 	if(root == nullptr)
-		return 0;
-	int lefth = height(root->left);
-	int righth = height(root->right);
+		return;
 
-	return max(lefth , righth) + 1;
+	// this is preorder traversal with printing on a special condition
+	if(level > *maxlevel){
+		cout << root->key << " ";
+		*maxlevel = level;
+	}
+	left_view(root->left, maxlevel, level+1);
+	left_view(root->right, maxlevel, level+1);
 }
 
 int main(){
@@ -43,6 +49,8 @@ int main(){
 	root->left->right->right = new Node(12);
 	root->left->right->right->right = new Node(20);
 
-	cout << "height of the tree is " << height(root) << endl;
+	int maxlevel = 0;
+	left_view(root, &maxlevel, 1);
+
     return 0;
 }

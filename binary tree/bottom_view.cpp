@@ -1,5 +1,6 @@
 #include<bits/stdc++.h>
 using namespace std;
+map<int,pair<int,int>> bottom_most_node;
 
 struct Node{
 	int key;
@@ -10,13 +11,21 @@ struct Node{
 	}
 };
 
-int height(Node *root){
+void bottom_view(Node *root, int horizontal_level, int vertical_level){
 	if(root == nullptr)
-		return 0;
-	int lefth = height(root->left);
-	int righth = height(root->right);
+		return;
 
-	return max(lefth , righth) + 1;
+	if(bottom_most_node.count(horizontal_level) == 0){
+		bottom_most_node[horizontal_level] = {vertical_level, root->key};
+	}
+	else{
+		if(bottom_most_node[horizontal_level].first <= vertical_level){
+			bottom_most_node[horizontal_level] = {vertical_level, root->key};
+		}
+	}
+	
+	bottom_view(root->left, horizontal_level - 1, vertical_level + 1);
+	bottom_view(root->right, horizontal_level + 1, vertical_level + 1);
 }
 
 int main(){
@@ -43,6 +52,11 @@ int main(){
 	root->left->right->right = new Node(12);
 	root->left->right->right->right = new Node(20);
 
-	cout << "height of the tree is " << height(root) << endl;
+	bottom_view(root, 0, 0);
+	for(auto x:bottom_most_node){
+		cout << x.second.second << " ";
+	}
+	cout << endl;
+	
     return 0;
 }
