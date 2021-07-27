@@ -2,8 +2,10 @@
 using namespace std;
 
 int main(){
-	int a,b;
-	a = b= 2;
-	cout << a << " " << b <<endl;
+	map<pair<int,int>,int> mpp;
+	mpp[{1,2}] = 2;
+	for(auto x:mpp){
+		cout << x.first.first << endl;
+	}
     return 0;
 }

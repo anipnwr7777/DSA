@@ -36,8 +36,8 @@ int convertSumTree(Node *root){
 		rightsum = convertSumTree(root->right);
 
 	int old = root->key;
-	root->key = leftsum + rightsum;
-	return old + root->key;
+	root->key = leftsum + rightsum; // change it's value to sum of children
+	return old + root->key;		// pass the entire sum (children and itself) to it's parent
 }
 
 int main(){
