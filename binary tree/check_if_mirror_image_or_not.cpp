@@ -24,25 +24,13 @@ bool areMirrorImage(Node *root1, Node *root2){
 
 int main(){
 
-	/*
-	     root-> 3
-			   / \
-			  4   5
-			 / \ / \
-			7  8 10 11   
-			    \
-			     12
-			      \
-			      20
-	*/
-
 	Node *root1 = new Node(1);
-    // root1->left = new Node(2);
-    // root1->left->left = new Node(3);
+    root1->left = new Node(2);
+    root1->left->left = new Node(3);
  
     Node *root2 = new Node(1);
-    // root2->right = new Node(2);
-    // root2->right->right = new Node(3);
+    root2->right = new Node(2);
+    root2->right->right = new Node(3);
 
     areMirrorImage(root1, root2) ? cout << "yes they are" : cout << "no they are not" ;
     cout << endl;
