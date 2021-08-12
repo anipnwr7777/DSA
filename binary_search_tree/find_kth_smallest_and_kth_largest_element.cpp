@@ -35,22 +35,26 @@ void printTree(Node *root){  // inorder printing
 	printTree(root->right);
 }
 
-void findkthLargest(Node *root, int num, int k){
+void findkthLargest(Node *root, int &num, int k){
 	if(root == nullptr)
 		return;
-	if(num == k)
+	findkthLargest(root->left, num, k);
+	if(num == k){
 		cout << "kth largest element is: " << root->key << endl;
-	findkthLargest(root->left, num+1, k);
-	findkthLargest(root->right, num+1, k);
+	}
+	num++;
+	findkthLargest(root->right, num, k);
 }
 
-void findkthSmallest(Node *root, int num, int k){
+void findkthSmallest(Node *root, int &num, int k){
 	if (root == nullptr)
 		return;
-	if(num == k)
+	findkthSmallest(root->left, num, k);
+	if(num == k){
 		cout << "kth smallest element is: " << root->key << endl;
-	findkthSmallest(root->left, num+1, k);
-	findkthSmallest(root->right, num+1, k);
+	}
+	num++;
+	findkthSmallest(root->right, num, k);
 }
 
 int main(){
@@ -69,7 +73,9 @@ int main(){
 
 	int k;
 	cin >> k;
-	findkthSmallest(root, 1, k);
-	findkthLargest(root, 1, n-k+1);
+	int start1, start2;
+	start1 = start2 = 1;
+	findkthSmallest(root, start1, k);
+	findkthLargest(root, start2, n-k+1);
 	return 0;
 }
