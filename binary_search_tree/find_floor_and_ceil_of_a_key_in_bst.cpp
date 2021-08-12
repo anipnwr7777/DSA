@@ -28,14 +28,14 @@ Node *insert(Node *root, int data){  // insert the new node and return the final
 	return root;  // return the final pointer.
 }
 
-void findFloorCeil(Node *root, int data, int &previous, int n, int curr){
+void findFloorCeil(Node *root, int data, int &previous, int n, int &curr){
 	if(root == nullptr){		// no tree
 		return;
 	}
 
 	// inorder traversal
 	// left
-	findFloorCeil(root->left, data, previous, n, curr+1);		
+	findFloorCeil(root->left, data, previous, n, curr);		
 
 
 	// root
@@ -57,10 +57,11 @@ void findFloorCeil(Node *root, int data, int &previous, int n, int curr){
 		flag = true;
 	}
 	previous = root->key;  		// set the previous here, not in the function call
+	curr++;
 
 
 	// right
-	findFloorCeil(root->right, data, previous, n, curr+1);
+	findFloorCeil(root->right, data, previous, n, curr);
 }
 
 int main(){
@@ -79,7 +80,7 @@ int main(){
 
 	int data;
 	cin >> data;
-	int previous = -1;
-	findFloorCeil(root, data, previous, n, 1);
+	int previous = -1, current = 1;
+	findFloorCeil(root, data, previous, n, current);
 	return 0;
 }
