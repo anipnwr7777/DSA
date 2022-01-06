@@ -25,6 +25,7 @@ int query(int index, int segstart, int segend, int qstart, int qend) {
 		int data = lazy[index];
 		lazy[index] = 0;
 		segmenttree[index] += data * (segend - segstart + 1);
+		// if it is not a leaf node, then pass the updation to it's child.
 		if (segstart != segend) {
 			lazy[2 * index] += data;
 			lazy[2 * index + 1] += data;
@@ -42,7 +43,7 @@ int query(int index, int segstart, int segend, int qstart, int qend) {
 }
 
 void update(int index, int segstart, int segend, int qstart, int qend, int val) {
-	// update the changes that very done in previous updations but very not committed in either query or updation function (if any)
+	// update the changes that were done in previous updations but were not committed in either query or updation function (if any)
 	if (lazy[index] != 0) {
 		int data = lazy[index];
 		lazy[index] = 0;
@@ -66,7 +67,7 @@ void update(int index, int segstart, int segend, int qstart, int qend, int val) 
 			lazy[2 * index] += val;
 			lazy[2 * index + 1] += val;
 		}
-		return;
+		return; 	// don't go ahead just update till here and go back (this is the main part and that is why it is called lazy)
 	}
 
 	int mid = (segstart + segend) / 2;

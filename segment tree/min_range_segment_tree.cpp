@@ -15,6 +15,7 @@ vector<int> segmenttree;
 
 // building a minimum segment tree that stores minimum in all ranges {O(n)}
 void buildtree(int index, int start, int end, vector<int> array) {
+	// on the leaf node
 	if (start == end) {
 		segmenttree[index] = array[start];
 		return;

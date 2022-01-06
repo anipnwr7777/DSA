@@ -1,6 +1,5 @@
 #include<bits/stdc++.h>
 using namespace std;
-
 typedef long double ld;
 #define int long long
 #define largest 9223372036854775700
@@ -23,7 +22,6 @@ void makeadj(int m, int n){
 }
   
 void dfs(int node){
-
     visited[node] = 1;
     intime[node] = timer++;     // take your time and increment for next node.
     cout << "in node " << node << endl;
